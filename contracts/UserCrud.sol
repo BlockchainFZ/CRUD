@@ -20,21 +20,21 @@ pragma solidity >=0.4.0 <0.7.0;
       }
 
       function insertUser(address userAddress, bytes32 userEmail, uint userAge) public returns(uint index) {
-        if(isUser(userAddress)) throw;
+        if(isUser(userAddress)) revert();
         userStructs[userAddress].userEmail = userEmail;
         userStructs[userAddress].userAge = userAge;
         userStructs[userAddress].index = userIndex.push(userAddress) - 1;
-          LogNewUser(
+          emit LogNewUser(
             userAddress,
             userStructs[userAddress].index,
             userEmail,
             userAge);
-            )
+
           return userIndex.length - 1;
       }
 
       function getUser(address userAddress) public view returns(bytes32 userEmail, uint userAge, uint index) {
-        if(!isUser(userAddress)) throw;
+        if(!isUser(userAddress)) revert();
         return(
         userStructs[userAddress].userEmail,
         userStructs[userAddress].userAge,
@@ -43,9 +43,9 @@ pragma solidity >=0.4.0 <0.7.0;
       }
 
       function updateUserEmail(address userAddress, bytes32 userEmail) public returns(bool success) {
-        if(!isUser(userAddress)) throw;
+        if(!isUser(userAddress)) revert();
         userStructs[userAddress].userEmail = userEmail;
-        LogUpdateUser(
+        emit LogUpdateUser(
           userAddress,
           userStructs[userAddress].index,
           userEmail,
@@ -54,12 +54,12 @@ pragma solidity >=0.4.0 <0.7.0;
       }
 
       function updateUserAge(address userAddress, uint userAge) public returns(bool success) {
-        if(!isUser(userAddress)) throw;
+        if(!isUser(userAddress)) revert();
         userStructs[userAddress].userAge = userAge;
-        LogUpdateUser(
+        emit LogUpdateUser(
           userAddress,
-          userStructs[userAddress].index = index;
-          userStructs[userAddress].email = email;
+          userStructs[userAddress].index,
+          userStructs[userAddress].userEmail,
           userAge);
           return true;
       }
