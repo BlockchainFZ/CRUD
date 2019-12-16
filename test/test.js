@@ -18,7 +18,20 @@ const truffleAssert = require('truffle-assertions');
     });
 */
     it('Allows a user to be added', async() => {
-      await contract.insertUser(owner, "Kevin",42);
+      let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
+      let userEmailAsc = web3.utils.hexToAscii(userEmailHex);
+      let userEmailAsc32 = web3.utils.padLeft(userEmailHex, 48);
+      await contract.insertUser(owner, userEmailHex, 42);
+      let user = await contract.getUser(owner);
+      let userEmail = user.userEmail;
+      userEmailAsc32 = web3.utils.padRight(userEmail, 16);
+      console.log(userEmailHex);
+      console.log(userEmail);
+      console.log(userEmailAsc32);
+      assert.equal(user.userAge.toNumber(), 42, "Incorrect user age");
+      //assert.equal(user.userEmail,userEmailHex, "Incorrect user email");
+
+
     })
 
   });
