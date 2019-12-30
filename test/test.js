@@ -8,9 +8,11 @@ const truffleAssert = require('truffle-assertions');
     let contract;
     let owner = accounts[0];
     let secondAddress = accounts[1];
+    let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
 
     beforeEach(async() => {
       contract = await MigrationContract.new({from:owner});
+      let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
 
     });
 
@@ -19,9 +21,7 @@ const truffleAssert = require('truffle-assertions');
     });
 */
     it('Allows a user to be added', async() => {
-      let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
       let userEmailAsc = web3.utils.hexToAscii(userEmailHex);
-
       await contract.insertUser(owner, userEmailHex, 42);
       let user = await contract.getUser(owner);
       let userEmail = user.userEmail;
@@ -35,8 +35,18 @@ const truffleAssert = require('truffle-assertions');
 
       });
 
+      it('Confirms an address has been added', async() =>{
+        await contract.insertUser(owner, userEmailHex, 42);
+        let ownerBool = await contract.isUser(owner);
+        let secondAddressBool = await contract.isUser(secondAddress);
+
+        assert.equal(ownerBool, true, "User Address has been added");
+        assert.equal(secondAddressBool, false, "User Address has not been added");
+
+      });
+
+
       it('Allows a users email address to be updated', async() => {
-        let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
         let newUserEmailHex = web3.utils.asciiToHex("kevinkeaveney@gmail.com");
         await contract.insertUser(owner, userEmailHex, 42);
         await contract.updateUserEmail(owner, newUserEmailHex);
@@ -50,7 +60,6 @@ const truffleAssert = require('truffle-assertions');
       });
 
       it('Allows a users age to be updated', async() => {
-        let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
         await contract.insertUser(owner, userEmailHex, 42);
         let user = await contract.getUser(owner);
         let userOldAge = user.userAge;
