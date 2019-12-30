@@ -47,7 +47,19 @@ const truffleAssert = require('truffle-assertions');
         //console.log('New user email address', userNewEmail);
         assert.notEqual(userOldEmail, userNewEmail, "Email address has not changed");
 
+      });
 
+      it('Allows a users age to be updated', async() => {
+        let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
+        await contract.insertUser(owner, userEmailHex, 42);
+        let user = await contract.getUser(owner);
+        let userOldAge = user.userAge;
+        await contract.updateUserAge(owner, 43);
+        user = await contract.getUser(owner);
+        let userNewAge = user.userAge;
+        //console.log('Users old age', userOldAge.toNumber());
+        //console.log('Users new age', userNewAge.toNumber());
+        assert.notEqual(userOldAge,userNewAge,"User age has not changed");
       });
 
   });
