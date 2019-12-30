@@ -7,7 +7,7 @@ const truffleAssert = require('truffle-assertions');
 
     let contract;
     let owner = accounts[0];
-    let secondAddress = accounts[1];
+    let account2 = accounts[1];
     let userEmailHex = web3.utils.asciiToHex("kevinkeaveney@hotmail.com");
 
     beforeEach(async() => {
@@ -38,10 +38,10 @@ const truffleAssert = require('truffle-assertions');
       it('Confirms an address has been added', async() =>{
         await contract.insertUser(owner, userEmailHex, 42);
         let ownerBool = await contract.isUser(owner);
-        let secondAddressBool = await contract.isUser(secondAddress);
+        let account2Bool = await contract.isUser(account2);
 
         assert.equal(ownerBool, true, "User Address has been added");
-        assert.equal(secondAddressBool, false, "User Address has not been added");
+        assert.equal(account2Bool, false, "User Address has not been added");
 
       });
 
